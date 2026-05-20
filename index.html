@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReLiF-3D | MICCAI 2026</title>
+    <meta
+      name="description"
+      content="ReLiF-3D: Prior-Guided Semi-Supervised 3D MRI Segmentation via Robust Bias-Consistent Paired Views."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        var savedTheme = null;
+        try {
+          savedTheme = localStorage.getItem("relif-theme");
+        } catch (error) {
+          savedTheme = null;
+        }
+        var hour = new Date().getHours();
+        var autoTheme = hour >= 7 && hour < 18 ? "light" : "dark";
+        document.documentElement.dataset.theme = savedTheme || autoTheme;
+      })();
+    </script>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="#top" class="brand">ReLiF-3D</a>
+      <div class="nav-actions">
+        <nav aria-label="Page navigation">
+          <a href="#overview">Overview</a>
+          <a href="#method">Method</a>
+          <a href="#quantitative">Quantitative</a>
+          <a href="#qualitative">Qualitative</a>
+          <a href="#citation">Citation</a>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Switch color theme" aria-pressed="false">
+          <span class="theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="paper-header">
+        <div class="venue" aria-label="MICCAI 2026 early acceptance status">
+          <span>MICCAI 2026</span>
+          <span>Early Accept</span>
+          <span>Top 9% of Submissions</span>
+        </div>
+        <h2 class="title_home">
+          ReLiF-3D: Prior-Guided Semi-Supervised 3D MRI Segmentation via Robust
+          Bias-Consistent Paired Views
+        </h2>
+
+        <div class="authors">
+          <a class="author-highlight" href="https://kunaljangid01.github.io/">Kunal Jangid</a>,
+          <a href="https://sites.google.com/view/tanmaybasu/">Tanmay Basu</a>,
+          <a class="author-highlight" href="https://vinodkkurmi.github.io/">Vinod Kurmi</a>
+        </div>
+        <p class="affiliation">
+          AI Research ·
+          <a href="https://visdomlab.github.io/" target="_blank" rel="noreferrer">VisDom Lab</a>
+          · IISER Bhopal
+        </p>
+        <!-- <p class="research-note">
+          Medical AI · Foundation Models · Semi-Supervised Learning · 3D MRI Segmentation
+        </p> -->
+
+        <div class="links" aria-label="Project links">
+          <a href="paper.html">Paper</a>
+          <a href="https://github.com/kunaljangid01/ReLiF_3D" target="_blank" rel="noreferrer">Code</a>
+        </div>
+
+        <div class="paper-meta" aria-label="Paper metadata">
+          <span>Medical AI</span>
+          <span>Foundation Models</span>
+          <span>Semi-Supervised Learning</span>
+          <span>3D MRI Segmentation</span>
+        </div>
+      </section>
+
+      <section class="research-banner" aria-label="Research highlights">
+        <article>
+          <span>Problem</span>
+          <strong>Few labeled 3D volumes</strong>
+          <p>Manual voxel-level MRI annotation is expensive and hard to scale.</p>
+        </article>
+        <article>
+          <span>Idea</span>
+          <strong>Stable foundation prior</strong>
+          <p>Use a frozen SAM-Med3D prior instead of a drifting EMA teacher.</p>
+        </article>
+        <article>
+          <span>Robustness</span>
+          <strong>Bias-consistent paired views</strong>
+          <p>Model scanner-dependent shifts using smooth orthogonal bias fields.</p>
+        </article>
+      </section>
+
+      <section id="overview" class="section">
+        <div class="section-heading">
+          <span>Overview</span>
+          <h2>Foundation-guided learning for low-label 3D MRI segmentation.</h2>
+        </div>
+        <figure class="teaser">
+          <img src="assets/figures/ReLiSAM.png" alt="Overview diagram of the ReLiF-3D training pipeline" />
+          <figcaption>
+            Overview of ReLiF-3D. A frozen SAM-Med3D prior guides a lightweight trainable 3D U-Net.
+            SOBF generates bias-consistent paired views, while CGCR and LAR stabilize learning from
+            limited labeled volumes.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section abstract narrow">
+        <div class="section-heading">
+          <span>Abstract</span>
+          <h2>Stable prior supervision without a drifting teacher.</h2>
+        </div>
+        <p>
+          ReLiF-3D is a foundation-guided semi-supervised framework for 3D MRI segmentation under
+          limited annotation. The method trains a lightweight 3D U-Net using supervision from a
+          frozen volumetric foundation model prior, avoiding unstable EMA teacher drift while
+          retaining a stable spatial guide. Its Smooth Orthogonal Bias Field (SOBF) generator
+          produces anatomically consistent scanner-shifted paired views, and confidence-gated
+          co-regularization enforces consistency only on reliable agreements. Lesion-aware
+          representation alignment further improves robustness in low-label settings.
+        </p>
+
+        <div class="contribution-strip">
+          <article>
+            <strong>Frozen prior</strong>
+            <span>SAM-Med3D provides stable volumetric guidance.</span>
+          </article>
+          <article>
+            <strong>Bias-consistent views</strong>
+            <span>SOBF models scanner-dependent MRI intensity shifts.</span>
+          </article>
+          <article>
+            <strong>Reliable consistency</strong>
+            <span>CGCR and LAR reduce noisy pseudo-supervision.</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="method" class="section">
+        <div class="section-heading">
+          <span>Method</span>
+          <h2>Four components form the ReLiF-3D training recipe.</h2>
+        </div>
+        <div class="method-grid">
+          <article>
+            <span class="method-index">01</span>
+            <h3>Frozen SAM-Med3D Prior</h3>
+            <p>Provides stable anatomical guidance without EMA teacher updates.</p>
+          </article>
+          <article>
+            <span class="method-index">02</span>
+            <h3>SOBF Paired Views</h3>
+            <p>Simulates realistic scanner-dependent MRI bias through smooth multiplicative and additive fields.</p>
+          </article>
+          <article>
+            <span class="method-index">03</span>
+            <h3>Confidence-Gated Co-Regularization</h3>
+            <p>Applies consistency constraints only where paired predictions agree reliably.</p>
+          </article>
+          <article>
+            <span class="method-index">04</span>
+            <h3>Lesion-Aware Alignment</h3>
+            <p>Aligns lesion-relevant features with the foundation prior while reducing noisy background gradients.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <span>SOBF Visual</span>
+          <h2>Smooth orthogonal fields simulate scanner-dependent MRI bias.</h2>
+        </div>
+        <p class="section-text">
+          SOBF constructs paired MRI views using smooth orthogonal multiplicative and additive
+          fields. The visualization below shows clean images, generated bias fields, SOBF images,
+          difference maps, and ground-truth masks.
+        </p>
+        <figure class="figure-block">
+          <img src="assets/figures/SOBF_Visual_small2.png" alt="SOBF visualization with clean images, M field, A field, SOBF image, difference map, and ground truth" />
+        </figure>
+      </section>
+
+      <section id="quantitative" class="section">
+        <div class="section-heading">
+          <span>Quantitative</span>
+          <h2>Quantitative performance under limited labels.</h2>
+        </div>
+        <div class="result-analysis">
+          <div class="analysis-card">
+            <span>1 labeled volume</span>
+            <div class="metric-pair">
+              <strong><em>BraTS</em>76.41 Dice</strong>
+              <strong><em>LA</em>76.84 Dice</strong>
+            </div>
+            <p>ReLiF-3D remains stable in the hardest low-label setting on BraTS and LA.</p>
+          </div>
+          <div class="analysis-card">
+            <span>2 labeled volumes</span>
+            <div class="metric-pair">
+              <strong><em>BraTS</em>78.26 Dice</strong>
+              <strong><em>LA</em>79.14 Dice</strong>
+            </div>
+            <p>Adding one more labeled scan gives consistent overlap gains while preserving boundary quality.</p>
+          </div>
+          <div class="analysis-card">
+            <span>3 labeled volumes</span>
+            <div class="metric-pair">
+              <strong><em>BraTS</em>76.33 Dice</strong>
+              <strong><em>LA</em>79.50 Dice</strong>
+            </div>
+            <p>ReLiF-3D maintains strong LA performance while keeping BraTS overlap competitive.</p>
+          </div>          
+          <div class="analysis-card">
+            <span>5 labeled volumes</span>
+            <div class="metric-pair">
+              <strong><em>BraTS</em>77.69 Dice</strong>
+              <strong><em>LA</em>80.22 Dice</strong>
+            </div>
+            <p>The method continues improving as labels increase, without losing robustness to scanner shifts.</p>
+          </div>
+
+        </div>
+        <div class="insight-panel">
+          <span>Key insight</span>
+          <p>
+            Across extreme low-label regimes, ReLiF-3D improves overlap while reducing boundary errors.
+            The strongest gains appear in the 1-label setting, where stable foundation guidance and SOBF
+            paired views reduce the failure modes common in teacher-student SSL.
+          </p>
+        </div>
+      </section>
+
+      <section id="qualitative" class="section">
+        <div class="section-heading">
+          <span>Qualitative</span>
+          <h2>Qualitative comparisons and attention maps.</h2>
+        </div>
+        <div class="figure-grid">
+          <figure>
+            <img src="assets/figures/ReLiSAM_Seg_Compare_less_small.png" alt="Segmentation comparison between ReLiF-3D, SemiSAM+, ground truth, and input MRI image" />
+            <figcaption>Segmentation comparison against SemiSAM+.</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/figures/Visual_ReLiSAM_Gradcam_less_small.png" alt="Grad-CAM visualization comparing ReLiF-3D and SemiSAM+ against ground truth" />
+            <figcaption>Grad-CAM attention visualization.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="citation" class="section citation">
+        <div class="section-heading">
+          <span>Citation</span>
+          <h2>Cite ReLiF-3D.</h2>
+        </div>
+        <pre><code>@inproceedings{jangid2026relif3d,
+  title     = {ReLiF-3D: Prior-Guided Semi-Supervised 3D MRI Segmentation
+               via Robust Bias-Consistent Paired Views},
+  author    = {Jangid, Kunal and Basu, Tanmay and Kurmi, Vinod},
+  booktitle = {Proceedings of MICCAI},
+  year      = {2026}
+}</code></pre>
+
+        <div class="contact">
+          <h2>Contact</h2>
+          <p>
+            For queries and collaborations, contact
+            <a href="mailto:kunal24@iiserb.ac.in">kunal24@iiserb.ac.in</a>.
+            or
+            <a href="mailto:jangidkunal1999@gmail.com">jangidkunal1999@gmail.com</a>
+            
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      ReLiF-3D · MICCAI 2026
+    </footer>
+    <script src="assets/script.js"></script>
+  </body>
+</html>
