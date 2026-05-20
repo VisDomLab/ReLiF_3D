@@ -19,8 +19,7 @@
   }
 
   if (!root.dataset.theme) {
-    var hour = new Date().getHours();
-    setTheme(hour >= 7 && hour < 18 ? "light" : "dark", false);
+    setTheme("dark", false);
   } else {
     setTheme(root.dataset.theme, false);
   }

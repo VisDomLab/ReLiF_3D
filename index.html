@@ -22,9 +22,7 @@
         } catch (error) {
           savedTheme = null;
         }
-        var hour = new Date().getHours();
-        var autoTheme = hour >= 7 && hour < 18 ? "light" : "dark";
-        document.documentElement.dataset.theme = savedTheme || autoTheme;
+        document.documentElement.dataset.theme = savedTheme || "dark";
       })();
     </script>
     <link rel="stylesheet" href="assets/styles.css" />
